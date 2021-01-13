@@ -1,0 +1,567 @@
+#14 1 38 0
+login password Sys9559@local
+administrator password encrypted oL.Cz1fe1OZ.F7gtYap511MngPMb/Ro2
+user attribute connection=serial,telnet,remote,ssh,sftp,http gui-page=dashboard,lan-map,config login-timer=21474836
+console columns 200
+console lines infinity
+system packet-buffer small max-buffer=5000 max-free=1300 min-free=124 buffer-in-chunk=1250 init-chunk=1
+system packet-buffer middle max-buffer=10000 max-free=4950 min-free=240 buffer-in-chunk=2400 init-chunk=2
+system packet-buffer large max-buffer=20000 max-free=5600 min-free=93 buffer-in-chunk=931 init-chunk=6
+system packet-buffer huge max-buffer=40 max-free=0 min-free=0 buffer-in-chunk=2 init-chunk=0
+ip route default gateway pp 1
+ip route 10.0.0.0/16 gateway tunnel 26 keepalive 1 gateway tunnel 27 weight 0
+ip route 172.18.0.0/16 gateway tunnel 29 keepalive 1 gateway tunnel 30 weight 0
+ip route 172.22.0.0/16 gateway pp 3 filter 4000 gateway tunnel 1
+ip route 172.28.0.0/16 gateway tunnel 28
+ip route 172.30.0.0/16 gateway tunnel 28
+ip filter source-route on
+ip filter directed-broadcast on
+ip keepalive 26 icmp-echo 1 5 169.254.24.237
+ip keepalive 29 icmp-echo 1 5 169.254.25.77
+ip reassembly hold-time 180
+ipv6 rh0 discard on
+ipv6 routing process fast
+ipv6 route fdfd:845b:39c2:22::/64 gateway pp 3
+ipv6 route 2400:4102:402:22::/64 gateway pp 3
+ipv6 route default gateway pp 2
+ipv6 prefix 1 2400:4102:402:20::/64
+ipv6 prefix 2 fdfd:845b:39c2:20::/64
+ip lan1 address 172.20.0.240/16
+ip lan1 rip send on version 2
+ip lan1 rip receive on version 2
+ip lan1 proxyarp on
+ip lan1 tcp mss limit auto
+ipv6 lan1 address fe80::1/64
+ipv6 lan1 address 2400:4102:402:20::1/64
+ipv6 lan1 address fdfd:845b:39c2:20::1/64
+ipv6 lan1 rtadv send 1 2 o_flag=on
+ipv6 lan1 rip send on
+ipv6 lan1 rip receive on
+ipv6 lan1 dhcp service server
+ipv6 lan1 mld router version=1,2
+ipv6 lan1 tcp mss limit auto
+switch control use lan1 on terminal=on
+ip lan3 address 60.32.115.154/29
+ip lan3 rip send on version 2
+ip lan3 rip receive on version 2
+ip lan3 tcp mss limit auto
+ipv6 lan3 address fe80::1/64
+ipv6 lan3 address 2400:4102:402:fffe::154/64
+ipv6 lan3 rip send on
+ipv6 lan3 rip receive on
+ipv6 lan3 tcp mss limit auto
+pp disable all
+pp select 1
+ pp name PRV/1/1/5/0/0/0:OCN
+ pp keepalive interval 30 retry-interval=30 count=12
+ pp always-on on
+ pppoe use lan2
+ pppoe auto disconnect off
+ pp auth accept pap chap
+ pp auth myname g51le5bo@bizf.ocn.ne.jp kmku28
+ ppp lcp mru on 1454
+ ppp ipcp msext on
+ ppp ccp type none
+ ip pp address 60.32.115.153/32
+ ip pp mtu 1454
+ ip pp rip send off
+ ip pp rip receive off
+ ip pp secure filter in 200003 200020 200021 200022 200023 200024 200025 200030 200032 200080 200081 200082 200083
+ ip pp secure filter out 200013 200020 200021 200022 200023 200024 200025 200026 200027 200099 dynamic 200080 200081 200082 200083 200084 200085 200098 200099
+ ip pp intrusion detection in on reject=on
+ ip pp nat descriptor 1000
+ pp enable 1
+pp select 2
+ pp always-on on
+ pppoe use lan2
+ pppoe auto connect on
+ pppoe auto disconnect off
+ pp auth accept pap chap
+ pp auth myname g51le5bo@bizf6.ocn.ne.jp kmku28
+ ppp ipcp msext on
+ ppp ccp type none
+ ppp ipv6cp use on
+ ip pp intrusion detection in on
+ ipv6 pp rip send off
+ ipv6 pp rip receive off
+ ipv6 pp secure filter in 1010 1011 1012 2000
+ ipv6 pp secure filter out 3000 dynamic 100 101 102 103 104 105 106
+ ipv6 pp dhcp service client
+ ipv6 pp mld host version=1,2
+ ipv6 pp tcp mss limit auto
+ pp enable 2
+pp select 3
+ pp name PRV/3/1/5/0/0/0:FletsVPN
+ pp keepalive interval 30 retry-interval=30 count=12
+ pppoe use lan2
+ pppoe auto disconnect off
+ pp auth accept pap chap
+ pp auth myname user01@cvn5000045292 user01
+ ppp lcp mru on 1454
+ ip pp mtu 1454
+ pp enable 3
+pp select anonymous
+ pp name L2TP/IPsec(Anonymous)
+ pp bind tunnel11-tunnel25
+ pp auth request chap-pap
+ pp auth username remote01 Kuri8s
+ pp auth username remote02 Kuri8s
+ pp auth username remote03 Kuri8s
+ pp auth username remote04 Kuri8s
+ pp auth username remote05 Kuri8s
+ pp auth username remote06 Kuri8s
+ pp auth username remote07 Kuri8s
+ pp auth username remote08 Kuri8s
+ pp auth username remote09 Kuri8s
+ pp auth username remote10 Kuri8s
+ pp auth username remote11 Kuri8s
+ pp auth username remote12 Kuri8s
+ pp auth username h-nakano Kuri8s
+ pp auth username d-kubota p7BgXYTXpnns
+ pp auth username k-fujiwara UZHAx4QpKppz
+ ppp ipcp ipaddress on
+ ppp ipcp msext on
+ ip pp remote address pool 172.20.20.201-172.20.20.215
+ ip pp mtu 1258
+ pp enable anonymous
+no tunnel enable all
+tunnel select 1
+ tunnel name Head_East
+ description tunnel Head-East
+ tunnel encapsulation ipip
+ tunnel endpoint address 172.20.0.240 172.22.0.240
+ tunnel enable 1
+tunnel select 11
+ tunnel name s-kawaguchi
+ description tunnel 川口
+ tunnel encapsulation l2tp
+ ipsec tunnel 11
+  ipsec sa policy 11 11 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 11 off
+  ipsec ike keepalive use 11 off
+  ipsec ike nat-traversal 11 on
+  ipsec ike pre-shared-key 11 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 11 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 11
+tunnel select 12
+ tunnel name h-katase
+ description tunnel 片瀬
+ tunnel encapsulation l2tp
+ ipsec tunnel 12
+  ipsec sa policy 12 12 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 12 off
+  ipsec ike keepalive use 12 off
+  ipsec ike nat-traversal 12 on
+  ipsec ike pre-shared-key 12 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 12 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 12
+tunnel select 13
+ tunnel name h-nakamura
+ description tunnel 中村
+ tunnel encapsulation l2tp
+ ipsec tunnel 13
+  ipsec sa policy 13 13 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 13 off
+  ipsec ike keepalive use 13 off
+  ipsec ike nat-traversal 13 on
+  ipsec ike pre-shared-key 13 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 13 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 13
+tunnel select 14
+ tunnel name t-ajiki
+ description tunnel 安喰
+ tunnel encapsulation l2tp
+ ipsec tunnel 14
+  ipsec sa policy 14 14 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 14 off
+  ipsec ike keepalive use 14 off
+  ipsec ike nat-traversal 14 on
+  ipsec ike pre-shared-key 14 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 14 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 14
+tunnel select 15
+ tunnel name h-aoshima
+ description tunnel 青島
+ tunnel encapsulation l2tp
+ ipsec tunnel 15
+  ipsec sa policy 15 15 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 15 off
+  ipsec ike keepalive use 15 off
+  ipsec ike nat-traversal 15 on
+  ipsec ike pre-shared-key 15 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 15 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 15
+tunnel select 16
+ tunnel name nova-system
+ description tunnel ノバシステム
+ tunnel encapsulation l2tp
+ ipsec tunnel 16
+  ipsec sa policy 16 16 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 16 off
+  ipsec ike keepalive use 16 off
+  ipsec ike nat-traversal 16 on
+  ipsec ike pre-shared-key 16 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 16 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 16
+tunnel select 17
+ tunnel name d-hoshino
+ description tunnel 星野大輔
+ tunnel encapsulation l2tp
+ ipsec tunnel 17
+  ipsec sa policy 17 17 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 17 off
+  ipsec ike keepalive use 17 off
+  ipsec ike nat-traversal 17 on
+  ipsec ike pre-shared-key 17 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 17 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 17
+tunnel select 18
+ tunnel name teruya
+ description tunnel テルヤ
+ tunnel encapsulation l2tp
+ ipsec tunnel 18
+  ipsec sa policy 18 18 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 18 off
+  ipsec ike keepalive use 18 off
+  ipsec ike nat-traversal 18 on
+  ipsec ike pre-shared-key 18 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 18 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 18
+tunnel select 19
+ tunnel name t-cosmos
+ description tunnel コスモステクノ静岡
+ tunnel encapsulation l2tp
+ ipsec tunnel 19
+  ipsec sa policy 19 19 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 19 off
+  ipsec ike keepalive use 19 off
+  ipsec ike nat-traversal 19 on
+  ipsec ike pre-shared-key 19 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 19 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 19
+tunnel select 20
+ tunnel name y-suzuki
+ description tunnel 鈴木志奈
+ tunnel encapsulation l2tp
+ ipsec tunnel 20
+  ipsec sa policy 20 20 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 20 off
+  ipsec ike keepalive use 20 off
+  ipsec ike nat-traversal 20 on
+  ipsec ike pre-shared-key 20 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 20 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 20
+tunnel select 21
+ tunnel name m-tanaka
+ description tunnel 田中麻子
+ tunnel encapsulation l2tp
+ ipsec tunnel 21
+  ipsec sa policy 21 21 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 21 off
+  ipsec ike keepalive use 21 off
+  ipsec ike nat-traversal 21 on
+  ipsec ike pre-shared-key 21 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 21 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 21
+tunnel select 22
+ tunnel name h-takahashi
+ description tunnel 高橋
+ tunnel encapsulation l2tp
+ ipsec tunnel 22
+  ipsec sa policy 22 22 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 22 off
+  ipsec ike keepalive use 22 off
+  ipsec ike nat-traversal 22 on
+  ipsec ike pre-shared-key 22 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 22 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 22
+tunnel select 23
+ tunnel name h-nakano
+ description tunnel 仲野
+ tunnel encapsulation l2tp
+ ipsec tunnel 23
+  ipsec sa policy 23 23 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 23 off
+  ipsec ike keepalive use 23 off
+  ipsec ike nat-traversal 23 on
+  ipsec ike pre-shared-key 23 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 23 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 23
+tunnel select 24
+ tunnel name k-fujiwara
+ description tunnel 藤原
+ tunnel encapsulation l2tp
+ ipsec tunnel 24
+  ipsec sa policy 24 24 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 24 off
+  ipsec ike keepalive use 24 off
+  ipsec ike nat-traversal 24 on
+  ipsec ike pre-shared-key 24 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 24 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 24
+tunnel select 25
+ tunnel name d-kubota
+ description tunnel 久保田
+ tunnel encapsulation l2tp
+ ipsec tunnel 25
+  ipsec sa policy 25 25 esp aes-cbc sha-hmac
+  ipsec ike keepalive log 25 off
+  ipsec ike keepalive use 25 off
+  ipsec ike nat-traversal 25 on
+  ipsec ike pre-shared-key 25 text nNCicg9xY!@dCiB=,_C2h,M_9w%fDX*z
+  ipsec ike remote address 25 any
+ l2tp tunnel auth off 
+ l2tp keepalive use on
+ ip tunnel tcp mss limit auto
+ tunnel enable 25
+tunnel select 26
+ tunnel name HQ_Amazon(Main)
+ description tunnel systemcreates-amazon(Main)
+ ipsec tunnel 26
+  ipsec sa policy 26 26 esp aes-cbc sha-hmac
+  ipsec ike duration ipsec-sa 26 3600
+  ipsec ike encryption 26 aes-cbc
+  ipsec ike group 26 modp1024
+  ipsec ike hash 26 sha
+  ipsec ike keepalive use 26 on dpd 10 3
+  ipsec ike local address 26 60.32.115.153
+  ipsec ike nat-traversal 26 off
+  ipsec ike pfs 26 on
+  ipsec ike pre-shared-key 26 text eJFTWhtxLvAFN0FqYBNWLTIxYa5PJCcB
+  ipsec ike remote address 26 52.68.98.170
+ ipsec tunnel outer df-bit clear
+ ip tunnel address 169.254.24.238/30
+ ip tunnel remote address 169.254.24.237
+ ip tunnel tcp mss limit auto
+ tunnel enable 26
+tunnel select 27
+ tunnel name HQ_Amazon(Sub)
+ description tunnel systemcreates-amazon(Sub)
+ ipsec tunnel 27
+  ipsec sa policy 27 27 esp aes-cbc sha-hmac
+  ipsec ike duration ipsec-sa 27 3600
+  ipsec ike encryption 27 aes-cbc
+  ipsec ike group 27 modp1024
+  ipsec ike hash 27 sha
+  ipsec ike keepalive use 27 on dpd 10 3
+  ipsec ike local address 27 60.32.115.153
+  ipsec ike nat-traversal 27 off
+  ipsec ike pfs 27 on
+  ipsec ike pre-shared-key 27 text sR81S9za_J1I.S6KXaFp.wRJMbK6DtUU
+  ipsec ike remote address 27 52.193.255.232
+ ipsec tunnel outer df-bit clear
+ ip tunnel address 169.254.24.166/30
+ ip tunnel remote address 169.254.24.165
+ ip tunnel tcp mss limit auto
+ tunnel enable 27
+tunnel select 28
+ tunnel name HQ-Azure
+ description tunnel systemcreates-azure
+ ipsec tunnel 28
+  ipsec sa policy 28 28 esp aes256-cbc sha256-hmac anti-replay-check=off
+  ipsec ike version 28 2
+  ipsec ike duration child-sa 28 27000
+  ipsec ike duration ike-sa 28 28800
+  ipsec ike group 28 modp1024
+  ipsec ike keepalive log 28 off
+  ipsec ike keepalive use 28 on rfc4306
+  ipsec ike local address 28 60.32.115.153
+  ipsec ike local name 28 60.32.115.153 ipv4-addr
+  ipsec ike nat-traversal 28 off
+  ipsec ike message-id-control 28 on
+  ipsec ike child-exchange type 28 2
+  ipsec ike pre-shared-key 28 text 72lA4chkcv8sXFZv2oi5KgONd30RkvUl
+  ipsec ike remote address 28 104.215.9.246
+  ipsec ike remote name 28 104.215.9.246 ipv4-addr
+  ipsec ike negotiation receive 28 off
+ ip tunnel tcp mss limit auto
+ tunnel enable 28
+tunnel select 29
+ tunnel name SCC-Amazon(Main)
+ description tunnel scc-amazon(Main)
+ ipsec tunnel 29
+  ipsec sa policy 29 29 esp aes-cbc sha-hmac
+  ipsec ike duration ipsec-sa 29 3600
+  ipsec ike encryption 29 aes-cbc
+  ipsec ike group 29 modp1024
+  ipsec ike hash 29 sha
+  ipsec ike keepalive use 29 on dpd 10 3
+  ipsec ike local address 29 60.32.115.153
+  ipsec ike nat-traversal 29 off
+  ipsec ike pfs 29 on
+  ipsec ike pre-shared-key 29 text fAm26fPNKBKVB7Fl2Fd4lVSQBzldzluh
+  ipsec ike remote address 29 13.113.34.158
+ ipsec tunnel outer df-bit clear
+ ip tunnel address 169.254.25.78/30
+ ip tunnel remote address 169.254.25.77
+ ip tunnel tcp mss limit 1379
+ tunnel enable 29
+tunnel select 30
+ tunnel name SCC-Amazon(Sub)
+ description tunnel scc-amazon(Sub)
+ ipsec tunnel 30
+  ipsec sa policy 30 30 esp aes-cbc sha-hmac
+  ipsec ike duration ipsec-sa 30 3600
+  ipsec ike encryption 30 aes-cbc
+  ipsec ike group 30 modp1024
+  ipsec ike hash 30 sha
+  ipsec ike keepalive use 30 on dpd 10 3
+  ipsec ike local address 30 60.32.115.153
+  ipsec ike nat-traversal 30 off
+  ipsec ike pfs 30 on
+  ipsec ike pre-shared-key 30 text GVZH5QClT5KOutuvZHRXMYqTZj9h4zAu
+  ipsec ike remote address 30 18.179.116.124
+ ipsec tunnel outer df-bit clear
+ ip tunnel address 169.254.27.78/30
+ ip tunnel remote address 169.254.27.77
+ ip tunnel tcp mss limit 1379
+ tunnel enable 30
+ip filter 4000 pass 172.20.0.0/16 172.22.0.0/16 *
+ip filter 200000 reject-nolog 10.0.0.0/8 * * * *
+ip filter 200001 reject-nolog 172.16.0.0/12 * * * *
+ip filter 200002 reject-nolog 192.168.0.0/16 * * * *
+ip filter 200003 reject-nolog 172.20.0.0/16 * * * *
+ip filter 200010 reject-nolog * 10.0.0.0/8 * * *
+ip filter 200011 reject-nolog * 172.16.0.0/12 * * *
+ip filter 200012 reject-nolog * 192.168.0.0/16 * * *
+ip filter 200013 reject-nolog * 172.20.0.0/16 * * *
+ip filter 200020 reject-nolog * * udp,tcp 135 *
+ip filter 200021 reject-nolog * * udp,tcp * 135
+ip filter 200022 reject-nolog * * udp,tcp netbios_ns-netbios_ssn *
+ip filter 200023 reject-nolog * * udp,tcp * netbios_ns-netbios_ssn
+ip filter 200024 reject-nolog * * udp,tcp 445 *
+ip filter 200025 reject-nolog * * udp,tcp * 445
+ip filter 200026 restrict * * tcpfin * www,21,nntp
+ip filter 200027 restrict * * tcprst * www,21,nntp
+ip filter 200030 pass * 172.20.0.0/16 icmp * *
+ip filter 200031 pass * 172.20.0.0/16 established * *
+ip filter 200032 pass * 172.20.0.0/16 tcp * ident
+ip filter 200033 pass * 172.20.0.0/16 tcp ftpdata *
+ip filter 200034 pass * 172.20.0.0/16 tcp,udp * domain
+ip filter 200035 pass * 172.20.0.0/16 udp domain *
+ip filter 200036 pass * 172.20.0.0/16 udp * ntp
+ip filter 200037 pass * 172.20.0.0/16 udp ntp *
+ip filter 200080 pass * 60.32.115.153 udp * 500
+ip filter 200081 pass * 60.32.115.153 esp
+ip filter 200082 pass * 60.32.115.153 udp * 4500
+ip filter 200083 pass * 60.32.115.153 udp * 1701
+ip filter 200098 reject-nolog * * established
+ip filter 200099 pass * * * * *
+ip filter dynamic 200080 * * ftp
+ip filter dynamic 200081 * * domain
+ip filter dynamic 200082 * * www
+ip filter dynamic 200083 * * smtp
+ip filter dynamic 200084 * * pop3
+ip filter dynamic 200085 * * telnet
+ip filter dynamic 200098 * * tcp
+ip filter dynamic 200099 * * udp
+nat descriptor log on
+nat descriptor type 1000 nat-masquerade
+nat descriptor timer 1000 300
+nat descriptor timer 1000 tcpfin 10
+nat descriptor address outer 1000 60.32.115.158
+nat descriptor address inner 1000 172.20.0.2-172.20.0.239 172.20.1.1-172.20.255.254 172.22.20.1-172.22.20.254
+nat descriptor masquerade incoming 1000 reject 
+bgp use on
+bgp autonomous-system 65000
+bgp neighbor 1 64512 169.254.25.77 hold-time=30 local-address=169.254.25.78
+bgp neighbor 2 64512 169.254.27.77 hold-time=30 local-address=169.254.27.78
+bgp neighbor 3 65515 172.28.0.30 hold-time=30 gateway=tunnel28 local-address=172.20.0.240 ignore-capability=on
+bgp neighbor 4 65010 172.22.0.240 hold-time=30 gateway=pp3 local-address=172.20.0.240
+bgp import filter 1 equal 172.20.0.0/16 172.22.0.0/16 172.28.0.0/16 172.18.0.0/16
+bgp import 64512 static filter 1
+bgp import 65010 static filter 1
+bgp import 65515 static filter 1
+ipsec auto refresh on
+ipsec transport 11 11 udp 1701
+ipsec transport 12 12 udp 1701
+ipsec transport 13 13 udp 1701
+ipsec transport 14 14 udp 1701
+ipsec transport 15 15 udp 1701
+ipsec transport 16 16 udp 1701
+ipsec transport 17 17 udp 1701
+ipsec transport 18 18 udp 1701
+ipsec transport 19 19 udp 1701
+ipsec transport 20 20 udp 1701
+ipsec transport 21 21 udp 1701
+ipsec transport 22 22 udp 1701
+ipsec transport 23 23 udp 1701
+ipsec transport 24 24 udp 1701
+ipsec transport 25 25 udp 1701
+ipv6 filter 1010 pass * * icmp6 * *
+ipv6 filter 1011 pass * * tcp * ident
+ipv6 filter 1012 pass * * udp * 546
+ipv6 filter 2000 reject * * * * *
+ipv6 filter 3000 pass * * * * *
+ipv6 filter dynamic 100 * * ftp
+ipv6 filter dynamic 101 * * domain
+ipv6 filter dynamic 102 * * www
+ipv6 filter dynamic 103 * * smtp
+ipv6 filter dynamic 104 * * pop3
+ipv6 filter dynamic 105 * * tcp
+ipv6 filter dynamic 106 * * udp
+radius auth on
+radius auth server 172.20.0.20 172.20.0.21
+radius auth port 1812
+radius secret Kuri8s@RTX1210
+dhcp service server
+dhcp server rfc2131 compliant except remain-silent
+dhcp scope 1 172.20.20.1-172.20.20.192/16 gateway 172.20.0.240 expire 8:00
+dhcp scope bind 1 172.20.20.1 ethernet 10:5b:ad:34:c6:41
+dhcp scope bind 1 172.20.20.10 ethernet dc:4a:3e:4d:eb:36
+dhcp scope bind 1 172.20.20.100 ethernet 00:27:10:bf:4c:48
+dhcp scope bind 1 172.20.20.123 ethernet 44:8a:5b:13:c6:20
+dhcp scope option 1 dns=172.20.0.20,172.20.0.21
+dns service fallback on
+dns server select 500001 pp 1 any . restrict pp 1
+dns server select 500002 pp 2 any . restrict pp 2
+dns private address spoof on
+dns notice order dhcp server
+snmp sysname yamaha-rtx1210-ac44f23d4594
+schedule at 1 */* 04:30:00 * ntpdate ntp.nict.jp syslog
+l2tp service on
+httpd host lan1 lan3 172.18.20.174
+statistics traffic on
+statistics nat on
